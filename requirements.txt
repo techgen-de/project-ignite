@@ -1,0 +1,2 @@
+delta-spark==2.2.0
+delta-of-delta==2.0.2

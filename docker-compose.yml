@@ -1,0 +1,63 @@
+version: "3"
+services:
+  jupyter:
+    image: jupyter/all-spark-notebook:latest
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./src:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - SPARK_OPTS=--driver-java-options=-Xms4g --driver-java-options=-Xmx4g
+      - SPARK_HOME=/usr/local/spark
+      - PYSPARK_PYTHON=/usr/bin/python3
+      - PYSPARK_DRIVER_PYTHON=/opt/conda/bin/jupyter
+      - PYSPARK_SUBMIT_ARGS=--jars /usr/local/spark/jars/delta-core_2.11-0.7.0.jar,/usr/local/spark/jars/azure-datalake-store-2.3.7.jar,/usr/local/spark/jars/kafka-clients-2.4.1.jar pyspark-shell
+    depends_on:
+      - spark
+      - kafka
+    networks:
+      - jupyter-network
+  spark:
+    image: bde2020/spark-base:3.0.0-hadoop3.2
+    volumes:
+      - ./data:/data
+    environment:
+      - ENABLE_INIT_DAEMON=false
+    networks:
+      - jupyter-network
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
+      - KAFKA_ADVERTISED_PORT=9092
+    depends_on:
+      - zookeeper
+    networks:
+      - jupyter-network
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - jupyter-network
+  airflow:
+    image: puckel/docker-airflow:latest
+    container_name: airflow
+    ports:
+      - "8080:8080"
+    environment:
+      - LOAD_EX=y
+    volumes:
+      - ./airflow-data:/usr/local/airflow
+    depends_on:
+      - spark
+    networks:
+      - jupyter-network
+networks:
+  jupyter-network:
+    driver: bridge
+

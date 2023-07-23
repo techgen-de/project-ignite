@@ -39,15 +39,19 @@ adlsContainerName = "ecommerce"
 BronzeFolderName = "Bronze"
 SilverFolderName = "Silver"
 GoldFolderName = "Gold"
+Parquet = "2023-07-22"
+SubFolder = "Data"
+Checkpoint = "Checkpoint"
 mountpoint = "/mnt"
-
-BronzePath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+BronzeFolderName+"/"
-SilverPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"
-GoldPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+GoldFolderName+"/"
+BronzePath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+BronzeFolderName+"/"+Parquet+"/"
+SilverPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"+SubFolder+"/"
+GoldPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+GoldFolderName+"/"+SubFolder+"/"
 
 # COMMAND ----------
 
-dbutils.fs.ls(BronzePath)
+BronzeCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+BronzeFolderName+"/"+Checkpoint+"/"
+SilverCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"+Checkpoint+"/"
+GoldCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+GoldFolderName+"/"+Checkpoint+"/"
 
 # COMMAND ----------
 

@@ -7,14 +7,23 @@
 
 from pyspark.sql.functions import *
 from pyspark.sql import SparkSession
+from pyspark.sql.types import IntegerType, StringType, FloatType, TimestampType, StructField, StructType, DateType
 
 # COMMAND ----------
 
 ## Start spark session
-spark = SparkSession \
-.builder \
-.appName("Data Engineering") \
-.getOrCreate()
+def create_spark_session():
+    return SparkSession.builder \
+        .appName("EcomDataLoad") \
+        .getOrCreate()
+
+# COMMAND ----------
+
+## Start spark session
+#spark = SparkSession \
+#.builder \
+#.appName("Data Engineering") \
+#.getOrCreate()
 
 # COMMAND ----------
 
@@ -39,20 +48,20 @@ adlsContainerName = "ecommerce"
 BronzeFolderName = "Bronze"
 SilverFolderName = "Silver"
 GoldFolderName = "Gold"
-Parquet = "2023-07-22"
+Parquet = "parquet_data_2"
 SubFolder = "Data"
 Checkpoint = "Checkpoint"
 mountpoint = "/mnt"
 BronzePath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+BronzeFolderName+"/"+Parquet+"/"
-SilverPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"+SubFolder+"/"
+SilverPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"+SubFolder
 GoldPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+GoldFolderName+"/"+SubFolder+"/"
 
 # COMMAND ----------
 
-BronzeCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+BronzeFolderName+"/"+Checkpoint+"/"
-SilverCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"+Checkpoint+"/"
+BronzeCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+BronzeFolderName+"/"+Checkpoint
+SilverCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"+Checkpoint
 GoldCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+GoldFolderName+"/"+Checkpoint+"/"
 
 # COMMAND ----------
 
-
+table_names = ['Product', 'Category', 'Customer', 'Address', 'OrderItems', 'Orders']

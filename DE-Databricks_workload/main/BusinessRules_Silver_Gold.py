@@ -39,10 +39,6 @@ Ecom_data = (spark.readStream.format("parquet")\
 
 # COMMAND ----------
 
-display(Ecom_data)
-
-# COMMAND ----------
-
 ## Create Product dataframe from ecoms payload
 Product = Ecom_data.select(col("ProductID").alias("product_id"), \
 col("CategoryID").alias("categories_id"), col("ProductName").alias("product_name"), \
@@ -56,11 +52,19 @@ for table_name in table_names:
   Product_path = f"{SilverPath}/{Product}"
   Product_SilverCheckpointPath = f"{SilverCheckpointPath}/{Product}"
 ## Create Product delta table from Product data frame
-ProductQuery = Product.writeStream.format('delta') \
+def updateDeltaTableProduct(batch_df, batchID):
+    Product_Table.alias('t')\
+    .merge(batch_df.alias('s'),'t.product_id=s.product_id')\
+    .whenMatchedUpdateAll()\
+    .whenNotMatchedInsertAll()\
+    .execute()
+
+ProductQuery = Product.writeStream.format('delta') \ \
+.foreachBatch(updateDeltaTableProduct) \
 .option('checkpointLocation', Product_SilverCheckpointPath) \
 .outputMode('append') \
 .trigger(once=True) \
-.start(Product_path)
+.start()
 
 # COMMAND ----------
 
@@ -76,11 +80,19 @@ Category_path = f"{SilverPath}/{Category}"
 Category_SilverCheckpointPath = f"{SilverCheckpointPath}/{Category}"
 
 ## Create Category delta table from Category data frame
-CategoryQuery = Category.writeStream.format('delta') \
+def updateDeltaTableCategory(batch_df, batchID):
+    Category_Table.alias('t')\
+    .merge(batch_df.alias('s'),'t.categories_id=s.categories_id')\
+    .whenMatchedUpdateAll()\
+    .whenNotMatchedInsertAll()\
+    .execute()
+
+CategoryQuery = Category.writeStream.format('delta') \ \
+.foreachBatch(updateDeltaTableCategory) \
 .option('checkpointLocation', Category_SilverCheckpointPath) \
 .outputMode('append') \
 .trigger(once=True) \
-.start(Category_path)
+.start()
 
 # COMMAND ----------
 
@@ -96,11 +108,19 @@ Customer_path = f"{SilverPath}/{Customer}"
 Customer_SilverCheckpointPath = f"{SilverCheckpointPath}/{Customer}"
 
 ## Create Customer delta table from Customer data frame
-CustomerQuery = Customer.writeStream.format('delta') \
+def updateDeltaTableCustomer(batch_df, batchID):
+    Category_Table.alias('t')\
+    .merge(batch_df.alias('s'),'t.customer_id=s.customer_id')\
+    .whenMatchedUpdateAll()\
+    .whenNotMatchedInsertAll()\
+    .execute()
+
+CustomerQuery = Customer.writeStream.format('delta') \ \
+.foreachBatch(updateDeltaTableCustomer) \
 .option('checkpointLocation', Customer_SilverCheckpointPath) \
 .outputMode('append') \
 .trigger(once=True) \
-.start(Customer_path)
+.start()
 
 # COMMAND ----------
 
@@ -117,11 +137,19 @@ Address_path = f"{SilverPath}/{Address}"
 Address_SilverCheckpointPath = f"{SilverCheckpointPath}/{Address}"
 
 ## Create Address delta table from Address data frame
-AddressQuery = Address.writeStream.format('delta') \
+def updateDeltaTableAddress(batch_df, batchID):
+    Address_Table.alias('t')\
+    .merge(batch_df.alias('s'),'t.customer_id=s.customer_id')\
+    .whenMatchedUpdateAll()\
+    .whenNotMatchedInsertAll()\
+    .execute()
+
+AddressQuery = Address.writeStream.format('delta') \ \
+.foreachBatch(updateDeltaTableAddress) \
 .option('checkpointLocation', Address_SilverCheckpointPath) \
 .outputMode('append') \
 .trigger(once=True) \
-.start(Address_path)
+.start()
 
 # COMMAND ----------
 
@@ -139,11 +167,19 @@ OrderItems_path = f"{SilverPath}/{OrderItems}"
 OrderItems_SilverCheckpointPath = f"{SilverCheckpointPath}/{OrderItems}"
 
 ## Create OrderItems delta table from OrderItems data frame
-OrderItemsQuery = OrderItems.writeStream.format('delta') \
+def updateDeltaTableOrderItems(batch_df, batchID):
+    Address_Table.alias('t')\
+    .merge(batch_df.alias('s'),'t.order_item_id=s.order_item_id')\
+    .whenMatchedUpdateAll()\
+    .whenNotMatchedInsertAll()\
+    .execute()
+
+OrderItemsQuery = OrderItems.writeStream.format('delta') \ \
+.foreachBatch(updateDeltaTableOrderItems) \
 .option('checkpointLocation', OrderItems_SilverCheckpointPath) \
 .outputMode('append') \
 .trigger(once=True) \
-.start(OrderItems_path)
+.start()
 
 # COMMAND ----------
 
@@ -160,82 +196,16 @@ Orders_path = f"{SilverPath}/{Orders}"
 Orders_SilverCheckpointPath = f"{SilverCheckpointPath}/{Orders}"
 
 ## Create orders delta table from orders data frame
-OrdersQuery = Orders.writeStream.format('delta') \
+def updateDeltaTableOrders(batch_df, batchID):
+    Orders_Table.alias('t')\
+    .merge(batch_df.alias('s'),'t.order_id=s.order_id')\
+    .whenMatchedUpdateAll()\
+    .whenNotMatchedInsertAll()\
+    .execute()
+
+OrdersQuery = Orders.writeStream.format('delta') \ \
+.foreachBatch(updateDeltaTableOrders) \
 .option('checkpointLocation', Orders_SilverCheckpointPath) \
 .outputMode('append') \
 .trigger(once=True) \
-.start(Orders_path)
-
-# COMMAND ----------
-
-Product = spark.read.format("delta").load(Product_path)
-display(Product)
-
-# COMMAND ----------
-
-Product.distinct().count()
-
-# COMMAND ----------
-
-Category = spark.read.format("delta").load(Category_path)
-display(Category)
-
-# COMMAND ----------
-
-Category.count()
-
-# COMMAND ----------
-
-Category.distinct().count()
-
-# COMMAND ----------
-
-Customer = spark.read.format("delta").load(Customer_path)
-display(Customer)
-
-# COMMAND ----------
-
-Customer.count()
-
-# COMMAND ----------
-
-Customer.distinct().count()
-
-# COMMAND ----------
-
-Address = spark.read.format("delta").load(Address_path)
-display(Address)
-
-# COMMAND ----------
-
-Address.count()
-
-# COMMAND ----------
-
-Address.distinct().count()
-
-# COMMAND ----------
-
-OrderItems = spark.read.format("delta").load(OrderItems_path)
-display(OrderItems)
-
-# COMMAND ----------
-
-OrderItems.count()
-
-# COMMAND ----------
-
-OrderItems.distinct().count()
-
-# COMMAND ----------
-
-Orders = spark.read.format("delta").load(Orders_path)
-display(Orders)
-
-# COMMAND ----------
-
-Orders.count()
-
-# COMMAND ----------
-
-Orders.distinct().count()
+.start()

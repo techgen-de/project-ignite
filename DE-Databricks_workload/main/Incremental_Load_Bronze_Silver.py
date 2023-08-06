@@ -3,7 +3,6 @@
 
 # COMMAND ----------
 
-
 ## Delta Table Names
 for table_name in table_names:
 
@@ -14,7 +13,6 @@ for table_name in table_names:
 
 
 # COMMAND ----------
-
 
 ## Create Category path
 Category_path = f"{SilverPath}/{Category}"

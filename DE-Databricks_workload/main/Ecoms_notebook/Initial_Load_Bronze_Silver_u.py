@@ -121,7 +121,6 @@ def merge_delta(df, table_name, primary_key):
 
 # COMMAND ----------
 
-
 ##Develop Ecoms data processing
 def create_delta_table(streaming_df, table_name, primary_key=None):
     delta_query = streaming_df.writeStream \
@@ -196,8 +195,4 @@ def merge_delta(df, table_name, primary_key):
 
 ##if __name__ == "__main__":
     
-
-
-# COMMAND ----------
-
 

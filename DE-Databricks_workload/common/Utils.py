@@ -55,13 +55,3 @@ mountpoint = "/mnt"
 BronzePath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+BronzeFolderName+"/"+Parquet+"/"
 SilverPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"+SubFolder
 GoldPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+GoldFolderName+"/"+SubFolder+"/"
-
-# COMMAND ----------
-
-BronzeCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+BronzeFolderName+"/"+Checkpoint
-SilverCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+SilverFolderName+"/"+Checkpoint
-GoldCheckpointPath = "abfss://" +adlsContainerName+"@"+adlsAccountName+".dfs.core.windows.net/"+GoldFolderName+"/"+Checkpoint+"/"
-
-# COMMAND ----------
-
-table_names = ['Product', 'Category', 'Customer', 'Address', 'OrderItems', 'Orders']

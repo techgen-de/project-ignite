@@ -12,8 +12,6 @@ def read_ecom_data(spark, schemaEcom, bronze_path, silver_checkpoint_path):
 
 # COMMAND ----------
 
-
-
 def create_product_df(ecom_data):
     return ecom_data.select(
         col("ProductID").alias("product_id"),
@@ -73,8 +71,4 @@ def create_orders_df(ecom_data):
         col("Status").alias("order_status"),
         col("PaymentMethod").alias("Payment_method")
     )
-
-
-# COMMAND ----------
-
 
